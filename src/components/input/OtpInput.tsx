@@ -61,6 +61,7 @@ export default function OtpInput(props: OtpInputProps) {
           setText(text);
           props?.onChange && props?.onChange(text);
         }}
+        inputMode="text"
       >
         <div className={cn("flex flex-col gap-2")}>
           {text.length >= 0 && (
