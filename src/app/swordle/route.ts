@@ -40,8 +40,8 @@ export async function GET(req: NextRequest) {
   }
 }
 
-function getWords(arr: unknown[]) {
-  let words: unknown[] = [];
+function getWords(arr: any[]) {
+  let words: any[] = [];
 
   for (let i = 0; i < arr.length; i++) {
     const word = arr[i]?.word ?? "";
