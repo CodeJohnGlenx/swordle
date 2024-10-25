@@ -82,7 +82,7 @@ export default function Home() {
         <Keyboard />
       </div>
 
-      <div className="py-4">
+      <div className="pb-4">
         <WordsDrawer onSwordle={handleSwordle} words={wordle.words} />
       </div>
     </div>
