@@ -39,19 +39,44 @@ export default function OtpInput(props: OtpInputProps) {
 
   const label = useMemo(() => {
     if (inputType === "correct") {
-      return "Correct letters";
+      return "orrect letters";
     } else if (inputType === "excluded") {
-      return "Excluded letters";
+      return "xcluded letters";
     } else if (inputType === "included") {
-      return "Included letters";
+      return "ncluded letters";
     } else {
       return "";
     }
   }, [inputType]);
 
+  const firstLetterLabel = useMemo(() => {
+    if (inputType === "correct") {
+      return "C";
+    } else if (inputType === "excluded") {
+      return "E";
+    } else if (inputType === "included") {
+      return "I";
+    } else {
+      return "";
+    }
+  }, [inputType]);
+
+  const firstLetterStyleLabel = useMemo(() => {
+    if (inputType === "correct") {
+      return "bg-green-400 text-white";
+    } else if (inputType === "excluded") {
+      return "bg-neutral-400 text-white";
+    } else if (inputType === "included") {
+      return "bg-amber-400 text-white";
+    }
+  }, [inputType]);
+
   return (
-    <div>
-      <Label className={cn("text-lg")}>{label}</Label>
+    <div className="flex flex-col gap-1">
+      <Label className={cn("text-lg")}>
+        <span className={cn(firstLetterStyleLabel, "p-1 px-2 me-1 rounded font-bold")}>{firstLetterLabel}</span>
+        {label}
+      </Label>
 
       <InputOTP
         minLength={minLength}

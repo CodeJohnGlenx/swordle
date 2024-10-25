@@ -1,10 +1,10 @@
-import Database from "better-sqlite3";
 import { NextRequest } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 
 export async function GET(req: NextRequest) {
   try {
-    const db = new Database("src/db/words.db");
-    db.pragma("journal_mode = WAL");
+    const supabaseUrl = process.env.PUBLIC_SUPABASE_URL ?? "";
+    const supabaseKey = process.env.PUBLIC_SUPABASE_ANON_KEY ?? "";
 
     const included = req.nextUrl.searchParams.get("included") ?? "";
     const correct = req.nextUrl.searchParams.get("correct") ?? "";
@@ -12,13 +12,13 @@ export async function GET(req: NextRequest) {
     const length = req.nextUrl.searchParams.get("length") ?? "5";
     const limit = 24;
 
-    const result = db
-      .prepare(
-        generateQuery(included, correct, excluded, parseInt(length), limit)
-      )
-      .all();
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const words = getWords(result);
+    const { data, error } = await supabase.rpc("get_words", {
+      _query: generateQuery(included, correct, excluded, parseInt(length), limit),
+    });
+
+    const words = getWords(data);
 
     return new Response(
       JSON.stringify({
@@ -41,14 +41,18 @@ export async function GET(req: NextRequest) {
 }
 
 function getWords(arr: any[]) {
-  let words: any[] = [];
+  try {
+    let words: any[] = [];
 
-  for (let i = 0; i < arr.length; i++) {
-    const word = arr[i]?.word ?? "";
-    words.push(word);
+    for (let i = 0; i < arr.length; i++) {
+      const word = arr[i]?.word ?? "";
+      words.push(word);
+    }
+  
+    return words;
+  } catch {
+    return [];
   }
-
-  return words;
 }
 
 function generateQuery(
@@ -72,8 +76,6 @@ function generateQuery(
     }
   }
 
-  console.log(wordArr);
-
   const excludedLettersQuery = excludedLetters.reduce((query, letter) => {
     return query + `AND word NOT LIKE '%${letter}%' `;
   }, "");
@@ -85,13 +87,14 @@ function generateQuery(
   let subStringQuery = "";
   for (let i = 0; i < wordLength; i++) {
     if (wordArr[i] !== "") {
-      subStringQuery += `AND SUBSTR(word, ${i + 1}, 1) = '${wordArr[i]}' `;
+      subStringQuery += `AND SUBSTRING(word FROM ${i + 1} FOR 1) = 
+      '${wordArr[i]}' `;
     }
   }
 
   return `
     SELECT * FROM words
-    WHERE length = ${wordLength}
+    WHERE LENGTH(word) = ${wordLength}
     ${excludedLettersQuery}
     ${includedLettersQuery}
     ${subStringQuery}

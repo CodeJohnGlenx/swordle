@@ -20,9 +20,9 @@ export const wordleStore = create((set, get) => ({
   },
   wordLength: 5,
   words: [],
-  setCorrect: (correct: string) => set({ correct }),
-  setIncluded: (included: string) => set({ included }),
-  setExcluded: (excluded: string) => set({ excluded }),
+  setCorrect: (correct: string) => set({ correct: correct.toUpperCase() }),
+  setIncluded: (included: string) => set({ included: included.toUpperCase() }),
+  setExcluded: (excluded: string) => set({ excluded: excluded.toUpperCase() }),
   setWordLength: (wordLength: number) => set({ wordLength }),
   setWords: (words: string[]) => set({ words }),
 }));
