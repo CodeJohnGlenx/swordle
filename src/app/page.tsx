@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import WordsDrawer from "@/components/drawer/WordsDrawer";
 import Keyboard from "@/components/input/Keyboard";
 import OtpInput from "@/components/input/OtpInput";
@@ -35,7 +35,6 @@ export default function Home() {
 
   return (
     <div>
-
       <Navbar />
 
       <div
@@ -79,12 +78,13 @@ export default function Home() {
         />
       </div>
 
-      <div className="py-4 md:py-6 lg:py-10">
+      <div className={cn("py-4 md:py-6 lg:py-10", `scale-x-90 scale-y-90`)}>
         <Keyboard />
       </div>
 
-      <WordsDrawer onSwordle={handleSwordle} words={wordle.words}/>
-
+      <div className="py-4">
+        <WordsDrawer onSwordle={handleSwordle} words={wordle.words} />
+      </div>
     </div>
   );
 }
